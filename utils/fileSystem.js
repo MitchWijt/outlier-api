@@ -3,11 +3,16 @@ const fs = require('fs')
 module.exports = {
   writeToFile,
   fetchJsonFromFile,
-  fileExists
+  fileExists,
+  removeFile
 }
 
 function writeToFile (path, newData) {
   fs.writeFileSync(path, JSON.stringify(newData, null, 2))
+}
+
+function removeFile (path) {
+  fs.unlinkSync(path)
 }
 
 function fetchJsonFromFile (path) {
