@@ -18,30 +18,56 @@ async function putStudent (httpRequest) {
     studentJsonObject = await fetchJsonFromFile(path)
   }
 
-  let studentDataIndex = studentJsonObject
+  const jsonObjectReference = studentJsonObject
 
-  let lastProperty = null
-  let counter = 0
-  for (const property of uriPropertyNames) {
-    if (!studentDataIndex[property]) {
-      if (!lastProperty) {
-        studentDataIndex[property] = {}
-        studentDataIndex = studentDataIndex[property]
-      } else {
-        if (counter === httpRequest.pathParams.propertyNames.length - 1) {
-          studentDataIndex[property] = { ...body }
-        } else {
-          studentDataIndex[property] = {}
-        }
-        studentDataIndex = studentDataIndex[property]
-      }
-    } else {
-      studentDataIndex = studentDataIndex[property]
-    }
-    lastProperty = property
-    counter++
-  }
+  setAndTraversePropertiesFromUriToObject(uriPropertyNames, jsonObjectReference, body)
 
   writeToFile(path, studentJsonObject)
   return (await fetchJsonFromFile(path))
+}
+
+const setAndTraversePropertiesFromUriToObject = (uriPropertyNames, jsonObject, newBodyData) => {
+  const loopVariables = {
+    lastProperty: null,
+    property: null,
+    bodyData: newBodyData,
+    uriPropertyNames: uriPropertyNames,
+    jsonObject: jsonObject
+  }
+
+  for (const property of uriPropertyNames) {
+    loopVariables.property = property
+
+    if (!jsonObject[property]) {
+      propertyDoesNotExistsOnObject(loopVariables)
+    } else {
+      propertyExistsOnObject(loopVariables)
+    }
+
+    loopVariables.lastProperty = property
+  }
+}
+
+const loopReachedLastElement = (currentLoopVar, loopArray) => {
+  return currentLoopVar === loopArray[loopArray.length - 1]
+}
+
+const propertyDoesNotExistsOnObject = (loopVariables) => {
+  if (!loopVariables.lastProperty) {
+    loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = {}
+  } else {
+    if (loopReachedLastElement(loopVariables.property, loopVariables.uriPropertyNames)) {
+      loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = { ...loopVariables.bodyData }
+    } else {
+      loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = {}
+    }
+  }
+}
+
+const propertyExistsOnObject = (loopVariables) => {
+  if (loopReachedLastElement(loopVariables.property, loopVariables.uriPropertyNames)) {
+    loopVariables.jsonObject[loopVariables.property] = { ...loopVariables.bodyData }
+  } else {
+    loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property]
+  }
 }
