@@ -9,3 +9,4 @@ const { studentRequestHandler } = require('../controllers')
 
 router.get('/:studentId/*?', studentRequestHandler)
 router.put('/:studentId/*?', studentRequestHandler)
+router.delete('/:studentId/*?', studentRequestHandler)
