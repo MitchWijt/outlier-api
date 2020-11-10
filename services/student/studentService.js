@@ -1,4 +1,5 @@
 const { getStudent } = require('./getStudent')
+const { putStudent } = require('./putStudent')
 
 module.exports = {
   studentService
@@ -7,5 +8,6 @@ module.exports = {
 async function studentService (httpRequest) {
   switch (httpRequest.method) {
     case 'GET' : return getStudent(httpRequest)
+    case 'PUT' : return putStudent(httpRequest)
   }
 }
