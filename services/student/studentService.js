@@ -1,7 +1,11 @@
+const { getStudent } = require('./getStudent')
+
 module.exports = {
   studentService
 }
 
 async function studentService (httpRequest) {
-  // service for student requests
+  switch (httpRequest.method) {
+    case 'GET' : return getStudent(httpRequest)
+  }
 }

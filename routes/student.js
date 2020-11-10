@@ -6,3 +6,5 @@ module.exports = {
 }
 
 const { studentRequestHandler } = require('../controllers')
+
+router.get('/:studentId/*?', studentRequestHandler)
