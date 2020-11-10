@@ -38,6 +38,24 @@ tape('should respond dagpauwoog 90', async function (t) {
   })
 })
 
+tape('should respond with empty object', async function (t) {
+  const url = `${endpoint}/rn1abu1/info/naw/address`
+  jsonist.delete(url, (err, body) => {
+    if (err) t.error(err)
+    t.equal(Object.keys(body.info.naw).length, 0)
+    t.end()
+  })
+})
+
+tape('should respond not found', async function (t) {
+  const url = `${endpoint}/rn1ab10/info/naw/address`
+  jsonist.delete(url, (err, body) => {
+    if (err) t.error(err)
+    t.equal(body.error, 'Not Found')
+    t.end()
+  })
+})
+
 tape('cleanup', function (t) {
   removeFile(`data/${putEndpointFileId}.json`)
   server.close()
