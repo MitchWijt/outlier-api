@@ -9,7 +9,7 @@ module.exports = {
 }
 
 async function putStudent (httpRequest) {
-  const path = `data/${httpRequest.pathParams.id}.json`
+  const path = httpRequest.path
   const uriPropertyNames = httpRequest.pathParams.propertyNames
   const { body } = httpRequest
   let studentJsonObject = {}

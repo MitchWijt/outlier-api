@@ -11,7 +11,7 @@ module.exports = {
 }
 
 async function deleteStudent (httpRequest) {
-  const path = `data/${httpRequest.pathParams.id}.json`
+  const path = httpRequest.path
   const uriPropertyNames = httpRequest.pathParams.propertyNames
 
   if (!fileExists(path)) {
