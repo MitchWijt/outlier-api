@@ -6,11 +6,20 @@ const endpoint = `http://localhost:${port}`
 
 const server = require('./server')
 
-tape('health', async function (t) {
-  const url = `${endpoint}/health`
+tape('should respond dagpauwoog 81', async function (t) {
+  const url = `${endpoint}/rn1abu8/info/naw/address`
   jsonist.get(url, (err, body) => {
     if (err) t.error(err)
-    t.ok(body.success, 'should have successful healthcheck')
+    t.equal(body, 'dagpauwoog 81')
+    t.end()
+  })
+})
+
+tape('should respond not found', async function (t) {
+  const url = `${endpoint}/rn1ab10/info/naw/address`
+  jsonist.get(url, (err, body) => {
+    if (err) t.error(err)
+    t.equal(body.error, 'Not Found')
     t.end()
   })
 })
