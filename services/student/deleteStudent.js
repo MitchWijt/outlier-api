@@ -4,7 +4,12 @@ const {
   fetchJsonFromFile
 } = require('../../utils/fileSystem')
 
-const { notFound } = require('../../utils/errors')
+const {
+  throw404IfPropertyNotFoundOnObject,
+  throw404IfFileDoesNotExist
+} = require('../../utils/errors')
+
+const { loopReachedLastElement } = require('../../utils/forLoopHelper')
 
 module.exports = {
   deleteStudent
@@ -14,17 +19,13 @@ async function deleteStudent (httpRequest) {
   const path = httpRequest.path
   const uriPropertyNames = httpRequest.pathParams.propertyNames
 
-  if (!fileExists(path)) {
-    throw notFound()
-  }
+  await throw404IfFileDoesNotExist(fileExists(path))
 
   const studentData = await fetchJsonFromFile(path)
   let studentDataIndex = studentData
 
   for (const property of uriPropertyNames) {
-    if (!studentDataIndex[property]) {
-      throw notFound()
-    }
+    await throw404IfPropertyNotFoundOnObject(studentDataIndex, property)
 
     if (loopReachedLastElement(property, uriPropertyNames)) {
       delete studentDataIndex[property]
@@ -34,9 +35,5 @@ async function deleteStudent (httpRequest) {
   }
 
   writeToFile(path, studentData)
-  return (await fetchJsonFromFile(path))
-}
-
-const loopReachedLastElement = (currentLoopVar, loopArray) => {
-  return currentLoopVar === loopArray[loopArray.length - 1]
+  return fetchJsonFromFile(path)
 }

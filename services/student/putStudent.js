@@ -4,6 +4,8 @@ const {
   fetchJsonFromFile
 } = require('../../utils/fileSystem')
 
+const { loopReachedLastElement } = require('../../utils/forLoopHelper')
+
 module.exports = {
   putStudent
 }
@@ -28,7 +30,6 @@ async function putStudent (httpRequest) {
 
 const setAndTraversePropertiesFromUriToObject = (uriPropertyNames, jsonObject, newBodyData) => {
   const loopVariables = {
-    lastProperty: null,
     property: null,
     bodyData: newBodyData,
     uriPropertyNames: uriPropertyNames,
@@ -43,24 +44,14 @@ const setAndTraversePropertiesFromUriToObject = (uriPropertyNames, jsonObject, n
     } else {
       propertyExistsOnObject(loopVariables)
     }
-
-    loopVariables.lastProperty = property
   }
 }
 
-const loopReachedLastElement = (currentLoopVar, loopArray) => {
-  return currentLoopVar === loopArray[loopArray.length - 1]
-}
-
 const propertyDoesNotExistsOnObject = (loopVariables) => {
-  if (!loopVariables.lastProperty) {
-    loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = {}
+  if (loopReachedLastElement(loopVariables.property, loopVariables.uriPropertyNames)) {
+    loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = { ...loopVariables.bodyData }
   } else {
-    if (loopReachedLastElement(loopVariables.property, loopVariables.uriPropertyNames)) {
-      loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = { ...loopVariables.bodyData }
-    } else {
-      loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = {}
-    }
+    loopVariables.jsonObject = loopVariables.jsonObject[loopVariables.property] = {}
   }
 }
 
