@@ -28,10 +28,11 @@ tape('should respond not found', async function (t) {
 
 tape('should respond dagpauwoog 90', async function (t) {
   const url = `${endpoint}/rn1abu1/info/naw`
-  const data = {
-    address: 'dagpauwoog 90'
+  const opts = {
+    headers: { 'content-type': 'application/x-www-form-urlencoded' }
   }
-  jsonist.put(url, data, (err, body) => {
+  const data = { address: 'dagpauwoog 90' }
+  jsonist.put(url, data, opts, (err, body) => {
     if (err) t.error(err)
     t.equal(body.info.naw.address, 'dagpauwoog 90')
     t.end()
