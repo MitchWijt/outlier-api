@@ -1,5 +1,4 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 
 const middleware = require('./middleware')
 const { router } = require('./routes/student')
@@ -8,7 +7,7 @@ const PORT = process.env.PORT || 1337
 
 const app = express()
 
-app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/', router)
 
